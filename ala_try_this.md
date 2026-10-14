@@ -11,3 +11,16 @@ npm ci
 
 # 3. Start
 npx expo start
+
+# 4. Lista zależności
+npm ls --depth=0          # bezpośrednie (z package.json)
+npm ls                    # pełne drzewo
+
+# Źródło prawdy: package-lock.json. Nie kopiuj node_modules z Maca na Linux.
+
+# 5. Wersja Expo SDK
+# SDK = pierwsza liczba pakietu expo (tu: expo@57.0.26 → SDK 57)
+npm ls expo --depth=0
+npx expo --version
+
+# "version": "1.0.0" w app.json to wersja aplikacji, nie SDK.
