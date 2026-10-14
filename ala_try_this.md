@@ -24,3 +24,9 @@ npm ls expo --depth=0
 npx expo --version
 
 # "version": "1.0.0" w app.json to wersja aplikacji, nie SDK.
+
+
+nvm use 22
+rm -rf node_modules
+npm install expo@57.0.26 --save-exact
+npx expo install --fix
