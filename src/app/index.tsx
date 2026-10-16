@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { Pressable, ScrollView, StyleSheet, Text, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
-import { setAudioModeAsync, useAudioPlayer } from "expo-audio";
+import { setAudioModeAsync, useAudioPlayer, useAudioPlayerStatus } from "expo-audio";
 import { Image } from "expo-image";
 
 const barks = [
@@ -34,18 +34,34 @@ const barks = [
 
 export default function Index() {
   const player = useAudioPlayer();
+  const status = useAudioPlayerStatus(player);
   const [selectedBark, setSelectedBark] = useState<number | null>(null);
+  const [audioError, setAudioError] = useState<string | null>(null);
 
   useEffect(() => {
+    let active = true;
     setAudioModeAsync({ playsInSilentMode: true }).catch((error: unknown) => {
       console.error("Nie udało się włączyć odtwarzania dźwięku.", error);
+      if (active) {
+        setAudioError("Nie udało się ustawić dźwięku. Spróbuj ponownie uruchomić aplikację.");
+      }
     });
+    return () => {
+      active = false;
+    };
   }, []);
 
   const playBark = (index: number) => {
-    player.replace(barks[index].source);
-    player.play();
-    setSelectedBark(index);
+    try {
+      setAudioError(null);
+      player.replace(barks[index].source);
+      player.play();
+      setSelectedBark(index);
+    } catch (error: unknown) {
+      console.error("Nie udało się odtworzyć szczeknięcia.", error);
+      setSelectedBark(null);
+      setAudioError("Nie udało się odtworzyć dźwięku. Spróbuj ponownie.");
+    }
   };
 
   return (
@@ -75,18 +91,26 @@ export default function Index() {
         <View style={styles.soundSection}>
           <View style={styles.sectionHeading}>
             <Text style={styles.sectionTitle}>Wybierz szczeknięcie</Text>
-            <Text style={styles.soundCount}>5 DŹWIĘKÓW</Text>
+            <Text style={styles.soundCount}>{barks.length} DŹWIĘKÓW</Text>
           </View>
+
+          {(audioError || status.error) && (
+            <Text accessibilityRole="alert" style={styles.errorText}>
+              {audioError ?? "Nie udało się odtworzyć dźwięku. Spróbuj ponownie."}
+            </Text>
+          )}
 
           <View style={styles.buttonGrid}>
             {barks.map((bark, index) => {
-              const isSelected = selectedBark === index;
+              const isSelected = selectedBark === index && status.playing;
 
               return (
                 <Pressable
                   key={bark.title}
                   accessibilityRole="button"
                   accessibilityLabel={`${bark.title}: ${bark.description}`}
+                  accessibilityHint="Odtwarza szczeknięcie od początku"
+                  accessibilityState={{ selected: isSelected }}
                   onPress={() => playBark(index)}
                   style={({ pressed }) => [
                     styles.barkButton,
@@ -179,6 +203,7 @@ const styles = StyleSheet.create({
   },
   sectionHeading: {
     flexDirection: "row",
+    flexWrap: "wrap",
     alignItems: "center",
     justifyContent: "space-between",
     gap: 8,
@@ -201,7 +226,7 @@ const styles = StyleSheet.create({
   },
   barkButton: {
     minHeight: 76,
-    width: "48%",
+    minWidth: 230,
     flexGrow: 1,
     flexBasis: "46%",
     flexDirection: "row",
@@ -251,5 +276,10 @@ const styles = StyleSheet.create({
     fontSize: 13,
     fontWeight: "600",
     textAlign: "center",
+  },
+  errorText: {
+    color: "#a02d20",
+    fontSize: 14,
+    lineHeight: 20,
   },
 });

@@ -1,56 +1,33 @@
-# Welcome to your Expo app 👋
+# Klub szczekania 🐾
 
-This is an [Expo](https://expo.dev) project created with [`create-expo-app`](https://www.npmjs.com/package/create-expo-app).
+Prosta aplikacja mobilna w Expo SDK 57 i React Native. Wyświetla zdjęcie psa i pozwala odtwarzać pięć lokalnych nagrań szczekania. Obsługuje Android, iOS oraz przeglądarkę.
 
-## Get started
+## Uruchomienie
 
-1. Install dependencies
-
-   ```bash
-   npm install
-   ```
-
-2. Start the app
-
-   ```bash
-   npx expo start
-   ```
-
-In the output, you'll find options to open the app in a
-
-- [development build](https://docs.expo.dev/develop/development-builds/introduction/)
-- [Android emulator](https://docs.expo.dev/workflow/android-studio-emulator/)
-- [iOS simulator](https://docs.expo.dev/workflow/ios-simulator/)
-- [Expo Go](https://expo.dev/go), a limited sandbox for trying out app development with Expo
-
-You can start developing by editing the files inside the **app** directory. This project uses [file-based routing](https://docs.expo.dev/router/introduction).
-
-## Get a fresh project
-
-When you're ready, run:
+Wymagany Node.js 22.13 lub nowszy w wersji 22 LTS oraz npm.
 
 ```bash
-npm run reset-project
+npm ci
+npm start
 ```
 
-This command will move the starter code to the **app-example** directory and create a blank **app** directory where you can start developing.
+Z terminala Expo wybierz urządzenie lub emulator. Wersję przeglądarkową uruchomisz poleceniem `npm run web`.
 
-### Other setup steps
+## Kod
 
-- To set up ESLint for linting, run `npx expo lint`, or follow our guide on ["Using ESLint and Prettier"](https://docs.expo.dev/guides/using-eslint/)
-- If you'd like to set up unit testing, follow our guide on ["Unit Testing with Jest"](https://docs.expo.dev/develop/unit-testing/)
-- Learn more about the TypeScript setup in this template in our guide on ["Using TypeScript"](https://docs.expo.dev/guides/typescript/)
+- `src/app/index.tsx` — ekran główny i odtwarzanie dźwięków.
+- `src/app/_layout.tsx` — nawigacja Expo Router.
+- `assets/audio/` — nagrania; źródła i licencje w `ATTRIBUTION.md`.
+- `app.json` — konfiguracja aplikacji. Mikrofon i odtwarzanie w tle są wyłączone.
 
-## Learn more
+Lokalny katalog `example/`, jeśli istnieje, zawiera archiwalny szablon i nie jest częścią aplikacji ani sprawdzania typów.
 
-To learn more about developing your project with Expo, look at the following resources:
+## Sprawdzenie kodu
 
-- [Expo documentation](https://docs.expo.dev/): Learn fundamentals, or go into advanced topics with our [guides](https://docs.expo.dev/guides).
-- [Learn Expo tutorial](https://docs.expo.dev/tutorial/introduction/): Follow a step-by-step tutorial where you'll create a project that runs on Android, iOS, and the web.
+```bash
+npm run lint
+npm run typecheck
+npx expo install --check
+```
 
-## Join the community
-
-Join our community of developers creating universal apps.
-
-- [Expo on GitHub](https://github.com/expo/expo): View our open source platform and contribute.
-- [Discord community](https://chat.expo.dev): Chat with Expo users and ask questions.
+Po zmianie konfiguracji natywnej w `app.json` trzeba ponownie zbudować aplikację, aby zmiany znalazły się w zainstalowanym pliku binarnym.
